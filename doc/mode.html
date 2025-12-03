@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoRadio App Design Concept</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /*
+     * 自定义CSS用于替代图像的占位符和图标绘制
+     * 仅使用黑、白、灰
+     */
+
+    /* 模拟地图背景图案 */
+    .map-placeholder {
+      background-color: #e5e7eb; /* gray-200 */
+      background-image:
+              linear-gradient(45deg, #d1d5db 25%, transparent 25%, transparent 75%, #d1d5db 75%, #d1d5db),
+              linear-gradient(45deg, #d1d5db 25%, transparent 25%, transparent 75%, #d1d5db 75%, #d1d5db);
+      background-size: 64px 64px;
+      background-position: 0 0, 32px 32px;
+    }
+
+    /* CSS绘制的图标形状 */
+    .icon-play {
+      width: 0; height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 20px solid white;
+    }
+    .icon-pause {
+      width: 20px; height: 24px;
+      border-left: 6px solid white;
+      border-right: 6px solid white;
+    }
+    .icon-list-black {
+      width: 24px; height: 24px;
+      background: linear-gradient(to bottom, black 4px, transparent 4px, transparent 8px, black 8px, transparent 12px, black 16px, transparent 20px);
+    }
+    .icon-search-black {
+      width: 20px; height: 20px;
+      border: 2px solid black; border-radius: 50%; position: relative;
+    }
+    .icon-search-black::after {
+      content: ''; position: absolute; top: 14px; left: 14px; width: 8px; height: 2px; background: black; transform: rotate(45deg);
+    }
+    .icon-chart-black {
+      width: 24px; height: 24px; display: flex; align-items: flex-end; justify-content: space-between;
+    }
+    .icon-chart-black div { width: 6px; background: black; }
+    .icon-settings-black {
+      width: 24px; height: 24px; border-radius: 50%; border: 6px solid black;
+    }
+
+    /* 地图标记点 */
+    .map-marker {
+      width: 24px; height: 24px; background-color: black; border: 4px solid white; border-radius: 50%; position: absolute; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .map-marker-active {
+      width: 32px; height: 32px; background-color: white; border: 6px solid black; z-index: 10;
+    }
+
+    /* 模拟 Toggle 开关 */
+    .toggle-bg {
+      width: 48px; height: 24px; background-color: #d1d5db; border-radius: 12px; position: relative;
+    }
+    .toggle-bg.on { background-color: black; }
+    .toggle-dot {
+      width: 20px; height: 20px; background-color: white; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all 0.2s;
+    }
+    .toggle-bg.on .toggle-dot { left: 26px; }
+
+  </style>
+</head>
+<body class="bg-gray-100 font-sans flex flex-col items-center py-10 space-y-10">
+
+<!-- ================= 页面 1: 播放页面 ================= -->
+<div class="phone-container w-[375px] h-[812px] bg-white overflow-hidden relative shadow-2xl rounded-3xl">
+  <!-- 无状态栏 -->
+
+  <!-- 上中部：地图区域 -->
+  <div class="relative w-full h-[480px] map-placeholder overflow-hidden">
+    <!-- 模拟地图元素 -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+      <div class="border-b border-gray-400 w-full h-32 top-24 absolute transform rotate-12"></div>
+      <div class="border-r border-gray-400 h-full w-32 left-48 absolute transform -rotate-6"></div>
+    </div>
+
+    <!-- 电台标记点 -->
+    <div class="map-marker" style="top: 120px; left: 80px;"></div>
+    <div class="map-marker" style="top: 300px; left: 60px;"></div>
+    <div class="map-marker" style="top: 200px; right: 50px;"></div>
+
+    <!-- 当前播放电台标记 (中心位置) -->
+    <div class="map-marker map-marker-active" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
+      <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-3 py-1 rounded-full whitespace-nowrap">Now Playing: Tokyo FM</div>
+    </div>
+  </div>
+
+  <!-- 下部分：播放器控件 -->
+  <div class="absolute bottom-0 w-full h-[332px] bg-white rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.1)] p-8 flex flex-col justify-between">
+
+    <!-- 电台信息 -->
+    <div class="text-center space-y-2">
+      <h2 class="text-2xl font-bold text-black leading-8">Tokyo Prime FM</h2>
+      <p class="text-sm text-gray-600 leading-6">Shibuya, Tokyo • 80.0 MHz</p>
+    </div>
+
+    <!-- 音量控制 (模拟) -->
+    <div class="flex items-center space-x-4 py-4">
+      <div class="text-xs text-gray-500">VOL</div>
+      <div class="h-1 flex-grow bg-gray-200 rounded-full relative">
+        <div class="absolute left-0 top-0 h-full w-2/3 bg-black rounded-full"></div>
+        <div class="absolute left-2/3 top-1/2 w-4 h-4 bg-black rounded-full transform -translate-y-1/2 -translate-x-1/2 shadow-sm"></div>
+      </div>
+    </div>
+
+    <!-- 主要控制按钮 -->
+    <div class="flex items-center justify-between px-4 pb-6">
+      <!-- 频道列表按钮 -->
+      <button class="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200" aria-label="Channel List">
+        <div class="icon-list-black"></div>
+      </button>
+
+      <!-- 上一首 (模拟) -->
+      <button class="w-12 h-12 flex items-center justify-center rounded-full" aria-label="Previous">
+        <div class="w-0 h-0 border-y-[8px] border-y-transparent border-r-[14px] border-r-black"></div>
+        <div class="w-1 h-4 bg-black ml-1"></div>
+      </button>
+
+      <!-- 播放/暂停 (大按钮) -->
+      <button class="w-20 h-20 flex items-center justify-center rounded-full bg-black shadow-xl active:scale-95 transition-transform" aria-label="Play/Pause">
+        <div class="icon-play ml-2"></div>
+        <!-- 暂停状态: <div class="icon-pause"></div> -->
+      </button>
+
+      <!-- 下一首 (模拟) -->
+      <button class="w-12 h-12 flex items-center justify-center rounded-full" aria-label="Next">
+        <div class="w-1 h-4 bg-black mr-1"></div>
+        <div class="w-0 h-0 border-y-[8px] border-y-transparent border-l-[14px] border-l-black"></div>
+      </button>
+
+      <!-- 更多 (占位) -->
+      <button class="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 text-black font-bold text-xl leading-none pb-2">...</button>
+    </div>
+  </div>
+
+  <!-- 底部导航栏 (模拟固定) -->
+  <div class="absolute bottom-0 w-full h-16 bg-white border-t border-gray-100 flex items-center justify-around px-2">
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer">
+      <div class="w-6 h-6 bg-black rounded-full border-2 border-white shadow-sm mb-1"></div>
+      <span class="text-[10px] font-bold text-black leading-tight">Player</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-search-black mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Discover</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-chart-black mb-1"><div class="h-2"></div><div class="h-4"></div><div class="h-3"></div></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Charts</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-settings-black mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Settings</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================= 页面 2: 聚合搜索页面 ================= -->
+<div class="phone-container w-[375px] h-[812px] bg-white overflow-hidden relative shadow-2xl rounded-3xl">
+  <div class="p-6 pt-12 space-y-8">
+    <!-- 标题 & 搜索框 -->
+    <div class="space-y-4">
+      <h1 class="text-3xl font-extrabold text-black tracking-tight">Discover</h1>
+      <div class="relative">
+        <div class="absolute top-4 left-4 icon-search-black opacity-50"></div>
+        <input type="text" placeholder="Search stations, cities, genres..." class="w-full h-14 bg-gray-100 rounded-xl pl-12 pr-4 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black">
+      </div>
+    </div>
+
+    <!-- 聚合分类 -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-bold text-black">Browse Categories</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="h-24 bg-gray-100 rounded-xl p-4 flex flex-col justify-between cursor-pointer hover:bg-gray-200 transition-colors">
+          <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+          <span class="font-bold text-black">By Language</span>
+        </div>
+        <div class="h-24 bg-gray-100 rounded-xl p-4 flex flex-col justify-between cursor-pointer hover:bg-gray-200 transition-colors">
+          <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+          <span class="font-bold text-black">By Country</span>
+        </div>
+        <div class="h-24 bg-gray-100 rounded-xl p-4 flex flex-col justify-between cursor-pointer hover:bg-gray-200 transition-colors">
+          <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+          <span class="font-bold text-black">By Genre</span>
+        </div>
+        <div class="h-24 bg-black rounded-xl p-4 flex flex-col justify-between cursor-pointer">
+          <div class="w-8 h-8 bg-gray-800 rounded-full border border-gray-700"></div>
+          <span class="font-bold text-white">Near Me</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 推荐结果列表 -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-bold text-black">Trending Worldwide</h2>
+      <div class="space-y-4">
+        <!-- 卡片 1 -->
+        <div class="flex items-center p-3 bg-white border border-gray-100 rounded-2xl shadow-sm cursor-pointer">
+          <div class="w-16 h-16 bg-gray-200 rounded-xl mr-4 flex-shrink-0"></div> <!-- Placeholder for station logo -->
+          <div class="flex-grow">
+            <h3 class="font-bold text-black leading-6">BBC Radio 1</h3>
+            <p class="text-sm text-gray-500 leading-5">London, UK • Pop</p>
+          </div>
+          <div class="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full">
+            <div class="w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-black ml-1"></div>
+          </div>
+        </div>
+        <!-- 卡片 2 -->
+        <div class="flex items-center p-3 bg-white border border-gray-100 rounded-2xl shadow-sm cursor-pointer">
+          <div class="w-16 h-16 bg-gray-200 rounded-xl mr-4 flex-shrink-0"></div>
+          <div class="flex-grow">
+            <h3 class="font-bold text-black leading-6">KEXP 90.3 FM</h3>
+            <p class="text-sm text-gray-500 leading-5">Seattle, USA • Alternative</p>
+          </div>
+          <div class="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full">
+            <div class="w-0 h-0 border-y-[6px] border-y-transparent border-l-[10px] border-l-black ml-1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 底部导航栏 (选中Discover) -->
+  <div class="absolute bottom-0 w-full h-16 bg-white border-t border-gray-100 flex items-center justify-around px-2">
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="w-6 h-6 bg-gray-300 rounded-full border-2 border-white shadow-sm mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Player</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer">
+      <div class="icon-search-black mb-1 border-black" style="border-width: 3px;"></div>
+      <span class="text-[10px] font-bold text-black leading-tight">Discover</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-chart-black mb-1"><div class="h-2"></div><div class="h-4"></div><div class="h-3"></div></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Charts</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-settings-black mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Settings</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================= 页面 3: 排行榜页面 ================= -->
+<div class="phone-container w-[375px] h-[812px] bg-white overflow-hidden relative shadow-2xl rounded-3xl">
+  <div class="p-6 pt-12 space-y-6">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-extrabold text-black tracking-tight">Leaderboard</h1>
+
+    <!-- 分段控制 Tabs -->
+    <div class="flex space-x-1 p-1 bg-gray-100 rounded-xl">
+      <button class="flex-1 py-3 text-sm font-bold text-black bg-white rounded-lg shadow-sm">Top Clicks</button>
+      <button class="flex-1 py-3 text-sm font-medium text-gray-500 rounded-lg">Most Commented</button>
+    </div>
+
+    <!-- 子过滤器 -->
+    <div class="flex space-x-4 overflow-x-auto pb-2">
+      <button class="px-4 py-2 bg-black text-white text-sm font-bold rounded-full whitespace-nowrap">Global</button>
+      <button class="px-4 py-2 bg-gray-100 text-black text-sm font-medium rounded-full whitespace-nowrap">By Country</button>
+      <button class="px-4 py-2 bg-gray-100 text-black text-sm font-medium rounded-full whitespace-nowrap">By Language</button>
+    </div>
+
+    <!-- 排行列表 -->
+    <div class="space-y-2 pt-2">
+      <!-- Rank 1 -->
+      <div class="flex items-center p-4 bg-gray-50 rounded-2xl">
+        <div class="text-2xl font-black italic text-black w-10 text-center mr-4">1</div>
+        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4 flex-shrink-0"></div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-black">Jazz FM London</h3>
+          <p class="text-xs text-gray-500">UK • English</p>
+        </div>
+        <div class="text-right">
+          <div class="font-bold text-black">1.2M</div>
+          <div class="text-[10px] text-gray-500 uppercase tracking-wider">Clicks</div>
+        </div>
+      </div>
+      <!-- Rank 2 -->
+      <div class="flex items-center p-4 bg-white border-b border-gray-100">
+        <div class="text-xl font-bold text-gray-400 w-10 text-center mr-4">2</div>
+        <div class="w-12 h-12 bg-gray-200 rounded-full mr-4 flex-shrink-0"></div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-black">Radio France Info</h3>
+          <p class="text-xs text-gray-500">France • French</p>
+        </div>
+        <div class="text-right">
+          <div class="font-bold text-black">980K</div>
+          <div class="text-[10px] text-gray-500 uppercase tracking-wider">Clicks</div>
+        </div>
+      </div>
+      <!-- Rank 3 -->
+      <div class="flex items-center p-4 bg-white border-b border-gray-100">
+        <div class="text-xl font-bold text-gray-400 w-10 text-center mr-4">3</div>
+        <div class="w-12 h-12 bg-gray-200 rounded-full mr-4 flex-shrink-0"></div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-black">Ibiza Global Radio</h3>
+          <p class="text-xs text-gray-500">Spain • Electronic</p>
+        </div>
+        <div class="text-right">
+          <div class="font-bold text-black">850K</div>
+          <div class="text-[10px] text-gray-500 uppercase tracking-wider">Clicks</div>
+        </div>
+      </div>
+      <!-- Rank 4 -->
+      <div class="flex items-center p-4 bg-white border-b border-gray-100">
+        <div class="text-lg font-medium text-gray-400 w-10 text-center mr-4">4</div>
+        <div class="w-10 h-10 bg-gray-100 rounded-full mr-4 flex-shrink-0"></div>
+        <div class="flex-grow">
+          <h3 class="font-bold text-black text-sm">NPR News</h3>
+          <p class="text-[10px] text-gray-500">USA • News</p>
+        </div>
+        <div class="text-right">
+          <div class="font-bold text-sm text-black">720K</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 底部导航栏 (选中Charts) -->
+  <div class="absolute bottom-0 w-full h-16 bg-white border-t border-gray-100 flex items-center justify-around px-2">
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="w-6 h-6 bg-gray-300 rounded-full border-2 border-white shadow-sm mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Player</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-search-black mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Discover</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer">
+      <div class="icon-chart-black mb-1"><div class="h-2 bg-black w-[8px]"></div><div class="h-4 bg-black w-[8px]"></div><div class="h-3 bg-black w-[8px]"></div></div>
+      <span class="text-[10px] font-bold text-black leading-tight">Charts</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-settings-black mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Settings</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================= 页面 4: 设置页面 ================= -->
+<div class="phone-container w-[375px] h-[812px] bg-white overflow-hidden relative shadow-2xl rounded-3xl">
+  <div class="p-6 pt-12 space-y-8">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-extrabold text-black tracking-tight">Settings</h1>
+
+    <!-- 设置列表群组 -->
+    <div class="space-y-6">
+
+      <!-- Group 1: Preferences -->
+      <div>
+        <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Preferences</h2>
+        <div class="bg-gray-50 rounded-2xl overflow-hidden">
+          <!-- Language Item -->
+          <div class="flex items-center justify-between p-5 border-b border-gray-200 cursor-pointer active:bg-gray-100">
+            <span class="text-lg font-medium text-black">Language</span>
+            <div class="flex items-center text-gray-500">
+              <span class="mr-3">English</span>
+              <!-- Chevron Right Icon -->
+              <div class="w-2 h-2 border-t-2 border-r-2 border-gray-400 transform rotate-45"></div>
+            </div>
+          </div>
+          <!-- Night Mode Item -->
+          <div class="flex items-center justify-between p-5">
+            <span class="text-lg font-medium text-black">Night Mode</span>
+            <!-- Toggle Switch (OFF state) -->
+            <div class="toggle-bg cursor-pointer">
+              <div class="toggle-dot shadow-sm"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group 2: Map Settings -->
+      <div>
+        <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">Map Options</h2>
+        <div class="bg-gray-50 rounded-2xl overflow-hidden">
+          <div class="flex items-center justify-between p-5 border-b border-gray-200">
+            <span class="text-lg font-medium text-black">Auto-Center on Play</span>
+            <!-- Toggle Switch (ON state) -->
+            <div class="toggle-bg on cursor-pointer">
+              <div class="toggle-dot shadow-sm"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between p-5 cursor-pointer active:bg-gray-100">
+            <span class="text-lg font-medium text-black">Clear Map Cache</span>
+            <!-- Chevron Right Icon -->
+            <div class="w-2 h-2 border-t-2 border-r-2 border-gray-400 transform rotate-45"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Group 3: About -->
+      <div>
+        <div class="bg-white border border-gray-100 rounded-2xl overflow-hidden mt-8">
+          <div class="flex items-center justify-center p-5 cursor-pointer active:bg-gray-50 text-black font-medium">
+            About GeoRadio v1.0
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 底部导航栏 (选中Settings) -->
+  <div class="absolute bottom-0 w-full h-16 bg-white border-t border-gray-100 flex items-center justify-around px-2">
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="w-6 h-6 bg-gray-300 rounded-full border-2 border-white shadow-sm mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Player</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-search-black mb-1"></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Discover</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer opacity-50">
+      <div class="icon-chart-black mb-1"><div class="h-2"></div><div class="h-4"></div><div class="h-3"></div></div>
+      <span class="text-[10px] font-medium text-black leading-tight">Charts</span>
+    </div>
+    <div class="flex flex-col items-center justify-center w-16 h-full cursor-pointer">
+      <div class="icon-settings-black mb-1 border-black" style="border-width: 5px;"></div>
+      <span class="text-[10px] font-bold text-black leading-tight">Settings</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

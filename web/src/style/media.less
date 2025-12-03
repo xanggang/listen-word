@@ -1,0 +1,95 @@
+// 基础字体大小设置
+html {
+  font-size: 16px; // PC端默认字体大小
+  height: 100dvh;
+
+  body {
+    height: 100dvh;
+  }
+
+  // 移动端小屏设备 (iPhone SE及以下)
+  @media (max-width: 374px) {
+    font-size: 14px;
+  }
+
+  // 移动端标准屏设备 (iPhone 6/7/8, iPhone X等)
+  @media (min-width: 375px) and (max-width: 767px) {
+    font-size: 15px;
+  }
+
+  // 移动端大屏设备 (iPad竖屏等)
+  @media (min-width: 768px) and (max-width: 1023px) {
+    font-size: 15px;
+  }
+
+  // 平板横屏/小型笔记本
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    font-size: 16px;
+  }
+
+  // 标准PC屏幕
+  @media (min-width: 1280px) and (max-width: 1439px) {
+    font-size: 16px;
+  }
+
+  // 大屏PC (1440p及以上)
+  @media (min-width: 1440px) {
+    font-size: 17px;
+  }
+
+}
+
+
+:root {
+
+  // 字号
+  --text-size-xs: 0.75rem; // 小字
+  --text-size-sm: 0.875rem; // 辅助文字
+  --text-size-base: 1rem; // 正文
+  --text-size-xl: 1.25rem; // 标题
+  --text-size-2xl: 1.5rem; // 大标题
+  --text-size-3xl: 1.875rem;
+  --text-size-4xl: 2.25rem;
+
+  // 颜色
+
+  // 字体颜色
+  --text-black: var(--oc-gray-9);   // 文本颜色 正文
+  --text-base: var(--oc-gray-7);   // 文本颜色 正文
+  --text-sub: var(--oc-gray-5);   // 文本的辅助颜色
+  --text-disabled: var(--oc-gray-6);   // 文本禁用状态
+
+  // 灰色背景  基础
+  --bg-base: var(--oc-gray-0);
+  // 比基础更深一点 用于背景色的叠加
+  --bg-base-1: var(--oc-gray-1);
+
+  // 描边
+  // 灰色描边 3
+  --bdc-base: var(--oc-gray-3);
+  // 表示禁用状态时
+  --bdc-disabled: var(--oc-gray-2);
+
+  // 反转bg
+  --bg-base-inv: var(--oc-gray-9);
+  // 反转bd
+  --bd-base-inv: var(--oc-gray-7);
+  // 反转bg
+  --text-base-inv: var(--oc-gray-0);
+
+  // 系统主要颜色
+  --primary: #328E6E;
+  // 更浅一点
+  --primary-1: #67AE6E;
+  // 辅助的
+  --primary-2: #90C67C;
+  // 反差的
+  --primary-3: #E1EEBC;
+
+}
+
+:root {
+  --gap: 0.75rem;
+  --avatar-size: 2.5rem;
+  --controller-height: 4rem;
+}

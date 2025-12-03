@@ -1,0 +1,61 @@
+server:
+  port: 2020
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: ${listen.datasource.driver-class-name}
+    url: jdbc:mysql://${listen.datasource.host}:${listen.datasource.port}/${listen.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${listen.datasource.username}
+    password: ${listen.datasource.password}
+  data:
+    redis:
+      password: ${listen.redis.password}
+      database: ${listen.redis.database}
+      port: ${listen.redis.port}
+      host: ${listen.redis.host}
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.naxi.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: delFlag  #全局逻辑删除字段值 3.3.0开始支持，详情看下面。
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+  # 搜索指定包别名
+  typeAliasesPackage: com.listen.entity
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath*:mapper/**/*Mapper.xml
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case:
+
+logging:
+  level:
+    com:
+      listen:
+        mapper: debug
+        service: info
+        controller: info
+
+listen:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: itcast
+    # 设置jwt过期时间
+    admin-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: itheima
+    user-ttl: 7200000
+    user-token-name: authentication

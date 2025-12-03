@@ -1,0 +1,20 @@
+@font-face {
+  font-family: PingFang Regular;
+  src: url('./PingFang/PingFang Regular.ttf');
+}
+
+@font-face {
+  font-family: PingFang Medium;
+  src: url('./PingFang/PingFang Medium.ttf');
+}
+
+@font-face {
+  font-family: PingFang Light;
+  src: url('./PingFang/PingFang Light.ttf');
+}
+
+
+@font-face {
+  font-family: PingFang Bold;
+  src: url('./PingFang/PingFang Bold.ttf');
+}

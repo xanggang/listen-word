@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>动态发光边框卡片</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #111; /* 深色背景以突出效果 */
+      margin: 0;
+    }
+
+    /* 卡片主体 */
+    .glow-card {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      background-color: #1a1a2e; /* 卡片的实际背景色，需要是不透明的 */
+      border-radius: 20px; /* 圆角 */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: sans-serif;
+      /* 确保卡片在伪元素之上 */
+      z-index: 1;
+      overflow: hidden; /* 可选：防止内部内容溢出圆角 */
+    }
+
+    /* 内部内容样式 (仅作展示) */
+    .glow-card h2 {
+      font-size: 3em;
+      margin: 0;
+    }
+    .glow-card p {
+      color: #aaa;
+    }
+
+    /* --- 核心效果实现 --- */
+
+    /* 定义旋转动画 */
+    @keyframes rotate-border {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 伪元素通用样式 */
+    .glow-card::before{
+      content: '';
+      position: absolute;
+      /* inset: -xxx; 决定了边框和光晕的宽度 */
+      /* 负值越大，边框/光晕越宽 */
+      left: -4px;
+      top: -4px;
+      right: -4px;
+      bottom: -4px;
+
+      /* 继承卡片的圆角 */
+      border-radius: inherit;
+
+      /* 核心：圆锥渐变背景 */
+      /* 透明 -> 亮色(高光) -> 透明，形成一个旋转的光锥 */
+      /* 你可以调整颜色来匹配原图的紫/蓝光 */
+      background: conic-gradient(
+              from 0deg,
+              transparent 0%,
+              transparent 60%,
+              #c33d3d 80%, /* 紫色高光 */ #803333 90%, /* 蓝色高光 */
+              transparent 100%
+      );
+
+      /* 应用旋转动画 */
+      /*animation: rotate-border 4s linear infinite;*/
+
+      /* 放在卡片主体后面 */
+      z-index: -1;
+    }
+
+    .glow-card::after{
+      content: '';
+      position: absolute;
+      /* inset: -xxx; 决定了边框和光晕的宽度 */
+      /* 负值越大，边框/光晕越宽 */
+      left: -4px;
+      top: -4px;
+      right: -4px;
+      bottom: -4px;
+
+      /* 继承卡片的圆角 */
+      border-radius: inherit;
+
+      /* 核心：圆锥渐变背景 */
+      /* 透明 -> 亮色(高光) -> 透明，形成一个旋转的光锥 */
+      /* 你可以调整颜色来匹配原图的紫/蓝光 */
+      background: conic-gradient(
+              from 0deg,
+              transparent 0%,
+              transparent 60%,
+              #ffffff 80%, /* 紫色高光 */
+              #ffffff 90%, /* 蓝色高光 */
+              transparent 100%
+      );
+
+      /* 应用旋转动画 */
+      animation: rotate-border 2s linear infinite;
+
+      /* 放在卡片主体后面 */
+      z-index: -1;
+    }
+
+
+    /* ::after 用于制造柔和的外部光晕 */
+    .glow-card::after {
+      /* 增加模糊度，制造发光感 */
+      filter: blur(20px);
+      /* 可以让光晕层稍微大一点，增强扩散感 */
+      left: -8px;
+      top: -8px;
+      right: -8px;
+      bottom: -8px;
+      z-index: -2; /* 放在更后面 */
+      opacity: 0.7; /* 可选：降低一点透明度让光晕更柔和 */
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="glow-card">
+  <div style="width: 95%; height: 95%;background: #0c8599; border-radius: 20px">
+
+  </div>
+</div>
+
+</body>
+</html>

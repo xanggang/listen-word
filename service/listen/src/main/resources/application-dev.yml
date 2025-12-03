@@ -1,0 +1,25 @@
+listen:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: nginx.naxi.fun
+    port: 13306
+    database: listen-world
+    username: root
+    password: xang1057516363
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    database: 10
+
+# 配置文件上传大小限制:cite[1]
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB        # 单个文件最大大小:cite[6]
+      max-request-size: 20MB     # 单次请求所有文件总最大大小:cite[6]
+
+# 自定义文件存储路径:cite[3]
+web:
+  upload-path: /Users/lynn/Documents/java/maomao/src/main/resources/uploader/       # 根据你的需要修改路径
+  file-proxy-path: http://localhost:8080/uploads/      # 根据你的需要修改路径
