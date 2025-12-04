@@ -14,13 +14,15 @@ import com.listen.service.CountriesService;
 import com.listen.service.LanguagesService;
 import com.listen.service.StationService;
 import com.listen.service.TagsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/common")
+@RequestMapping("/api/common")
+@Slf4j
 public class CommonController {
 
     @Autowired
@@ -47,7 +49,10 @@ public class CommonController {
      */
     @PostMapping("/languages")
     public Result<List<Languages>> getLanguages() {
-        return Result.success(languagesMapper.list());
+        log.info("Query all languages");
+        List list =  languagesMapper.list();
+        log.info("Query all languages={}", list);
+        return Result.success(list);
     }
 
     /**
