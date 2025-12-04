@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.listen.mapper.StationMapper">
+
+    <resultMap type="com.listen.entity.Station" id="StationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="changeuuid" column="changeuuid" jdbcType="VARCHAR"/>
+        <result property="stationuuid" column="stationuuid" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="urlResolved" column="url_resolved" jdbcType="VARCHAR"/>
+        <result property="homepage" column="homepage" jdbcType="VARCHAR"/>
+        <result property="favicon" column="favicon" jdbcType="VARCHAR"/>
+        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="country" column="country" jdbcType="VARCHAR"/>
+        <result property="countrycode" column="countrycode" jdbcType="VARCHAR"/>
+        <result property="iso31662" column="iso_3166_2" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="VARCHAR"/>
+        <result property="language" column="language" jdbcType="VARCHAR"/>
+        <result property="languagecodes" column="languagecodes" jdbcType="VARCHAR"/>
+        <result property="votes" column="votes" jdbcType="INTEGER"/>
+        <result property="lastchangetime" column="lastchangetime" jdbcType="TIMESTAMP"/>
+        <result property="lastchangetimeIso8601" column="lastchangetime_iso8601" jdbcType="TIMESTAMP"/>
+        <result property="codec" column="codec" jdbcType="VARCHAR"/>
+        <result property="bitrate" column="bitrate" jdbcType="INTEGER"/>
+        <result property="hls" column="hls" jdbcType="INTEGER"/>
+        <result property="lastcheckok" column="lastcheckok" jdbcType="INTEGER"/>
+        <result property="lastchecktime" column="lastchecktime" jdbcType="TIMESTAMP"/>
+        <result property="lastchecktimeIso8601" column="lastchecktime_iso8601" jdbcType="TIMESTAMP"/>
+        <result property="lastcheckoktime" column="lastcheckoktime" jdbcType="TIMESTAMP"/>
+        <result property="lastcheckoktimeIso8601" column="lastcheckoktime_iso8601" jdbcType="TIMESTAMP"/>
+        <result property="lastlocalchecktime" column="lastlocalchecktime" jdbcType="TIMESTAMP"/>
+        <result property="lastlocalchecktimeIso8601" column="lastlocalchecktime_iso8601" jdbcType="TIMESTAMP"/>
+        <result property="clicktimestamp" column="clicktimestamp" jdbcType="TIMESTAMP"/>
+        <result property="clicktimestampIso8601" column="clicktimestamp_iso8601" jdbcType="TIMESTAMP"/>
+        <result property="clickcount" column="clickcount" jdbcType="INTEGER"/>
+        <result property="clicktrend" column="clicktrend" jdbcType="INTEGER"/>
+        <result property="sslError" column="ssl_error" jdbcType="INTEGER"/>
+        <result property="geoLat" column="geo_lat" jdbcType="NUMERIC"/>
+        <result property="geoLong" column="geo_long" jdbcType="NUMERIC"/>
+        <result property="geoDistance" column="geo_distance" jdbcType="NUMERIC"/>
+        <result property="hasExtendedInfo" column="has_extended_info" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="page" parameterType="com.listen.dto.StationQuery" resultMap="StationMap">
+        select * from station
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="tags != null and tags != ''">
+                and tags like concat('%',#{tags},'%')
+            </if>
+            <if test="country != null and country != ''">
+                and country like concat('%',#{country},'%')
+            </if>
+            <if test="language != null and language != ''">
+                and language like concat('%',#{language},'%')
+            </if>
+            <if test="state != null and state != ''">
+                and state like concat('%',#{state},'%')
+            </if>
+            <if test="stationuuid != null and stationuuid != ''">
+                and stationuuid = #{stationuuid}
+            </if>
+            <if test="countrycode != null and countrycode != ''">
+                and countrycode = #{countrycode}
+            </if>
+            <if test="languagecodes != null and languagecodes != ''">
+                and languagecodes = #{languagecodes}
+            </if>
+        </where>
+    </select>
+
+
+
+</mapper>

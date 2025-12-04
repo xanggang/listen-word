@@ -3,13 +3,16 @@ package com.listen.controller.web;
 import com.common.result.PageResult;
 import com.common.result.Result;
 import com.listen.dto.PageQueryDTO;
+import com.listen.dto.StationQuery;
 import com.listen.entity.Countries;
 import com.listen.entity.Languages;
+import com.listen.entity.Station;
 import com.listen.entity.Tags;
 import com.listen.mapper.CountriesMapper;
 import com.listen.mapper.LanguagesMapper;
 import com.listen.service.CountriesService;
 import com.listen.service.LanguagesService;
+import com.listen.service.StationService;
 import com.listen.service.TagsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +37,9 @@ public class CommonController {
 
     @Autowired
     TagsService tagsService;
+
+    @Autowired
+    StationService stationService;
 
     /**
      * Query all languages
@@ -68,4 +74,15 @@ public class CommonController {
         return Result.success(pageResult);
     }
 
+    @PostMapping("/station/page")
+    public Result<PageResult<Station>> getStation(@RequestBody StationQuery stationQuery) {
+        PageResult<Station> pageResult = stationService.page(stationQuery);
+        return Result.success(pageResult);
+    }
+
+    @PostMapping("/station")
+    public Result<Station> getStationByID(@RequestBody Station station) {
+        Station res = stationService.getById(station.getId());
+        return Result.success(res);
+    }
 }
