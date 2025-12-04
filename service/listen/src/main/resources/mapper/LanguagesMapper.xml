@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.listen.mapper.LanguagesMapper">
+
+    <resultMap type="com.listen.entity.Languages" id="LanguagesMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="iso639" column="iso_639" jdbcType="VARCHAR"/>
+        <result property="stationcount" column="stationcount" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="page" resultMap="LanguagesMap">
+        select * from languages order by stationcount desc
+    </select>
+
+</mapper>

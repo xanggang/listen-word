@@ -1,0 +1,71 @@
+package com.listen.controller.web;
+
+import com.common.result.PageResult;
+import com.common.result.Result;
+import com.listen.dto.PageQueryDTO;
+import com.listen.entity.Countries;
+import com.listen.entity.Languages;
+import com.listen.entity.Tags;
+import com.listen.mapper.CountriesMapper;
+import com.listen.mapper.LanguagesMapper;
+import com.listen.service.CountriesService;
+import com.listen.service.LanguagesService;
+import com.listen.service.TagsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/common")
+public class CommonController {
+
+    @Autowired
+    LanguagesService languagesService;
+
+    @Autowired
+    LanguagesMapper languagesMapper;
+
+    @Autowired
+    CountriesService countriesService;
+
+    @Autowired
+    CountriesMapper countriesMapper;
+
+    @Autowired
+    TagsService tagsService;
+
+    /**
+     * Query all languages
+     * @return List of languages
+     */
+    @PostMapping("/languages")
+    public Result<List<Languages>> getLanguages() {
+        return Result.success(languagesMapper.list());
+    }
+
+    /**
+     * Query all countries
+     * @return List of countries
+     */
+    @PostMapping("/countries")
+    public Result<List<Countries>> getCountries() {
+        return Result.success(countriesMapper.list());
+    }
+
+    /**
+     * Query all tags
+     * @return List of tags
+     */
+    @PostMapping("/tags")
+    public  Result<List<Tags>> getTags() {
+        return Result.success(tagsService.list());
+    }
+
+    @PostMapping("/tags/page")
+    public  Result<PageResult<Tags>> getTagsPage(@RequestBody PageQueryDTO pageQueryDTO) {
+        PageResult<Tags> pageResult = tagsService.page(pageQueryDTO);
+        return Result.success(pageResult);
+    }
+
+}

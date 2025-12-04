@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @TableName("tags")
-public class Tag implements Serializable {
+public class Tags implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 

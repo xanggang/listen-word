@@ -2,21 +2,20 @@ package com.listen.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.common.utils.HttpClientUtil;
-import com.listen.entity.Country;
-import com.listen.entity.Language;
+import com.listen.entity.Countries;
+import com.listen.entity.Languages;
 import com.listen.entity.Station;
-import com.listen.entity.Tag;
+import com.listen.entity.Tags;
 import com.listen.mapper.CountriesMapper;
-import com.listen.mapper.LanguageMapper;
+import com.listen.mapper.LanguagesMapper;
 import com.listen.mapper.StationMapper;
-import com.listen.mapper.TagMapper;
+import com.listen.mapper.TagsMapper;
 import com.listen.service.StationSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.BatchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.Writer;
 import java.util.List;
 
 
@@ -32,10 +31,10 @@ public class StationSyncServiceImpl implements StationSyncService {
     private CountriesMapper countriesMapper;
 
     @Autowired
-    private LanguageMapper languageMapper;
+    private LanguagesMapper languageMapper;
 
     @Autowired
-    private TagMapper tagMapper;
+    private TagsMapper tagsMapper;
 
     @Autowired
     private StationMapper stationMapper;
@@ -45,7 +44,7 @@ public class StationSyncServiceImpl implements StationSyncService {
         String json = HttpClientUtil.doGet("http://fi1.api.radio-browser.info/json/countries", null);
         log.info("获取国家列表成功={}", json);
 
-        List<Country> countryList = JSONObject.parseArray(json, Country.class);
+        List<Countries> countryList = JSONObject.parseArray(json, Countries.class);
 
         log.info("获取国家列表成功={}", countryList);
         countriesMapper.insert(countryList);
@@ -56,7 +55,7 @@ public class StationSyncServiceImpl implements StationSyncService {
         String json = HttpClientUtil.doGet("http://fi1.api.radio-browser.info/json/languages", null);
         log.info("获取语言列表={}", json);
 
-        List<Language> languageList = JSONObject.parseArray(json, Language.class);
+        List<Languages> languageList = JSONObject.parseArray(json, Languages.class);
 
         log.info("获取语言列表={}", languageList);
         languageMapper.insert(languageList);
@@ -67,10 +66,10 @@ public class StationSyncServiceImpl implements StationSyncService {
         String json = HttpClientUtil.doGet("http://fi1.api.radio-browser.info/json/tags", null);
         log.info("获取标签列表={}", json);
 
-        List<Tag> tagList = JSONObject.parseArray(json, Tag.class);
+        List<Tags> tagList = JSONObject.parseArray(json, Tags.class);
 
         log.info("获取标签列表={}", tagList);
-        tagMapper.insert(tagList);
+        tagsMapper.insert(tagList);
     }
 
     // 获取全部电台

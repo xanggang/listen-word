@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @TableName("countries")
-public class Country implements Serializable {
+public class Countries implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
