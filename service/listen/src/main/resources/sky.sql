@@ -115,3 +115,10 @@ CREATE TABLE `tags` (
      `stationcount` int DEFAULT NULL COMMENT '电台数量',
      PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签实体类';
+
+CREATE TABLE `users` (
+                        `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+                        `name` varchar(255) DEFAULT NULL COMMENT '标签名称',
+                        `sex` int DEFAULT NULL COMMENT '电台数量',
+                        PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签实体类';
