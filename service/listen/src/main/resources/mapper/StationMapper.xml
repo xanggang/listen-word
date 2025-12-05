@@ -14,7 +14,6 @@
         <result property="tags" column="tags" jdbcType="VARCHAR"/>
         <result property="country" column="country" jdbcType="VARCHAR"/>
         <result property="countrycode" column="countrycode" jdbcType="VARCHAR"/>
-        <result property="iso31662" column="iso_3166_2" jdbcType="VARCHAR"/>
         <result property="state" column="state" jdbcType="VARCHAR"/>
         <result property="language" column="language" jdbcType="VARCHAR"/>
         <result property="languagecodes" column="languagecodes" jdbcType="VARCHAR"/>
@@ -51,12 +50,19 @@
             <if test="tags != null and tags != ''">
                 and tags like concat('%',#{tags},'%')
             </if>
+            <if test="tagId != null and tagId != ''">
+                and tags like concat('%', (select name from tags where id = #{tagId}), '%')
+            </if>
             <if test="country != null and country != ''">
                 and country like concat('%',#{country},'%')
             </if>
             <if test="language != null and language != ''">
                 and language like concat('%',#{language},'%')
             </if>
+            <if test="languageId != null and languageId != ''">
+                and language like concat('%', (select name from languages where id = #{languageId}), '%')
+            </if>
+
             <if test="state != null and state != ''">
                 and state like concat('%',#{state},'%')
             </if>
@@ -70,6 +76,7 @@
                 and languagecodes = #{languagecodes}
             </if>
         </where>
+        order by votes desc
     </select>
 
 

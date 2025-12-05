@@ -51,7 +51,7 @@ const toggleExpand = () => {
 
 onMounted(calcHeight)
 
-getLanguages()
+// getLanguages()
 </script>
 
 <template>

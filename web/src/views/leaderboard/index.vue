@@ -1,136 +1,154 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref, watch, watchEffect } from 'vue';
 import RadioGroup from '@/components/RadioGroup.vue'
 import { useI18n } from 'vue-i18n'
+import SlideRadioGroup from '@/components/SlideRadioGroup.vue'
+import { FilterEnums, getStationPage, getTags, getLanguages, type Station } from '@/api'
+import { useList } from '@/hooks/useList.ts'
+import { formatNumber } from '@/utils/utils'
+import LeaderboardItem from './LeaderboardItem.vue'
+import LeaderboardItem1 from './LeaderboardItem1.vue'
 
 const { t } = useI18n()
 
-// Tab状态
-const activeTab = ref('top-clicks'); // 'top-clicks' 或 'most-commented'
-
 // 过滤器状态
-const activeFilter = ref('global'); // 'global', 'by-country', 'by-language'
-
-const options =  [
-  { label: t('discover.global'), value: '1' },
-  { label: t('discover.byLanguage'), value: '2' },
-  { label: t('discover.byGenre'), value: '3' },
+const typeOptions = [
+  { label: t('discover.global'), value: FilterEnums.ALL },
+  { label: t('discover.byLanguage'), value: FilterEnums.By_Language },
+  { label: t('discover.byGenre'), value: FilterEnums.By_Genre },
 ]
+const typeActive = ref(FilterEnums.ALL); // 'global', 'by-country', 'by-language'
 
-// 排行榜数据
-const leaderboardData = [
-  {
-    rank: 1,
-    name: 'Jazz FM London',
-    country: 'UK',
-    language: 'English',
-    clicks: '1.2M',
-    isTop: true
-  },
-  {
-    rank: 2,
-    name: 'Radio France Info',
-    country: 'France',
-    language: 'French',
-    clicks: '980K',
-    isTop: true
-  },
-  {
-    rank: 3,
-    name: 'Ibiza Global Radio',
-    country: 'Spain',
-    language: 'Electronic',
-    clicks: '850K',
-    isTop: true
-  },
-  {
-    rank: 4,
-    name: 'NPR News',
-    country: 'USA',
-    language: 'News',
-    clicks: '720K',
-    isTop: false
+const tagActive = ref('')
+const tagOptions = ref<{ label: string, value: string }[]>([])
+
+const languagesOptions = ref<any[]>([])
+const languageActive = ref('')
+
+onMounted(() => {
+  getTags({
+    page: 1,
+    pageSize: 20
+  })
+      .then(res => {
+        tagOptions.value = res.records.map(item => ({
+          label: item.name,
+          value: item.id
+        }))
+        tagOptions.value.unshift({
+          label: t('discover.global'),
+          value: ''
+        })
+      })
+
+  getLanguages({
+    page: 1,
+    pageSize: 30
+  })
+      .then(res => {
+        languagesOptions.value = res.map(item => ({
+          label: item.name,
+          value: item.id,
+          iso_639: item.iso_639
+        }))
+            .slice(0, 30)
+        languagesOptions.value.unshift({
+          label: t('discover.global'),
+          value: ''
+        })
+      })
+})
+
+async function getData(data: any) {
+  const par = {
+    ...data,
   }
-];
 
-// 切换Tab
-const switchTab = (tab: string) => {
-  activeTab.value = tab;
-};
+  if (typeActive.value === FilterEnums.By_Genre) {
+    par.tagId = tagActive.value
+  }
+  if (typeActive.value === FilterEnums.By_Language) {
+    par.languageId = languageActive.value
+  }
 
-// 切换过滤器
-const switchFilter = (filter: string) => {
-  activeFilter.value = filter;
-};
+  const res = await getStationPage(par)
+
+  res.records.forEach((item, index) => {
+    item.rank = (data.page - 1) * data.pageSize + index + 1
+  })
+
+  return res
+}
+
+
+watch([typeActive, tagActive, languageActive], () => {
+  onRefresh()
+})
+
+const {
+  list, loading, finished, refreshing, onRefresh, onLoad,
+} = useList<any>({
+  apiFunc: getData,
+})
+
 </script>
 
 <template>
-  <div class="phone-container w-full h-full bg-white overflow-hidden relative pb-16">
-    <div class="p-6 pt-12 space-y-6">
+  <div class="phone-container">
+    <div class="p-6 mt-12 space-y-6 shrink-0" >
       <!-- 标题 -->
       <h1 class="text-3xl font-extrabold text-black tracking-tight">Leaderboard</h1>
 
-      <RadioGroup :options="options" v-model:value="activeFilter"></RadioGroup>
+      <!-- 分段控制 Tabs -->
+      <SlideRadioGroup :options="typeOptions" v-model:modelValue="typeActive"></SlideRadioGroup>
 
-      <!-- 排行列表 -->
-      <div class="space-y-2 pt-2">
-        <!-- Rank items -->
-        <div
-          v-for="item in leaderboardData"
-          :key="item.rank"
-          class="flex items-center p-4"
-          :class="{
-            'bg-gray-50 rounded-2xl': item.isTop && item.rank === 1,
-            'bg-white border-b border-gray-100': !item.isTop || item.rank > 1
-          }"
-        >
-          <div
-            class="text-center mr-4"
-            :class="{
-              'text-2xl font-black italic text-black w-10': item.rank === 1,
-              'text-xl font-bold text-gray-400 w-10': item.rank === 2 || item.rank === 3,
-              'text-lg font-medium text-gray-400 w-10': item.rank >= 4
-            }"
-          >{{ item.rank }}</div>
-
-          <div
-            class="mr-4 flex-shrink-0"
-            :class="{
-              'w-12 h-12 bg-gray-300 rounded-full': item.rank === 1 || item.rank === 2 || item.rank === 3,
-              'w-10 h-10 bg-gray-100 rounded-full': item.rank >= 4
-            }"
-          ></div>
-
-          <div class="flex-grow">
-            <h3
-              class="font-bold text-black"
-              :class="{
-                'text-sm': item.rank >= 4
-              }"
-            >{{ item.name }}</h3>
-            <p
-              class="text-xs text-gray-500"
-              :class="{
-                'text-[10px]': item.rank >= 4
-              }"
-            >{{ item.country }} • {{ item.language }}</p>
-          </div>
-
-          <div class="text-right">
-            <div
-              class="font-bold text-black"
-              :class="{
-                'text-sm': item.rank >= 4
-              }"
-            >{{ item.clicks }}</div>
-          </div>
-        </div>
-      </div>
+      <RadioGroup v-if="typeActive === FilterEnums.By_Genre" :options="tagOptions"
+                  v-model:value="tagActive"></RadioGroup>
+      <RadioGroup v-if="typeActive === FilterEnums.By_Language" :options="languagesOptions"
+                  v-model:value="languageActive"></RadioGroup>
     </div>
 
+    <div class="list-wrap">
+      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+        <van-list
+            class="mt-12"
+            v-model:loading="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+        >
+          <div class="space-y-4">
+            <LeaderboardItem
+                v-for="(item, index) in list"
+                :key="item.id"
+                :item="item"
+                :index="index"
+            />
+          </div>
+        </van-list>
+      </van-pull-refresh>
+    </div>
   </div>
 </template>
 
-<style scoped>
-/* 可以在这里添加额外的样式 */
+<style scoped lang="less">
+
+.phone-container {
+  @apply w-full h-full bg-white overflow-hidden relative flex! flex-col;
+}
+
+.phone-container .list-wrap {
+  height: 100%;
+  @apply space-y-2 pt-2;
+  //height: calc(50vh);
+  overflow: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.task-card {
+  display: flex;
+@apply items-center pt-4 ! pb-4;
+  //margin-bottom: 0.2rem;
+}
 </style>

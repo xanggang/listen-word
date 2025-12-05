@@ -52,6 +52,7 @@ function handleChange(item: Options) {
   font-size: var(--text-size-base);
   border-radius: calc(var(--text-size-xs) / 2);
   font-weight: bold;
+  flex-shrink: 0;
 
   &.active {
     background: var(--primary);

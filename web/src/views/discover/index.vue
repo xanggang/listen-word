@@ -11,10 +11,8 @@ const searchQuery = ref('');
 
 // 分类数据
 const categories = [
-  // { id: 1, name: t('discover.browseCategories'), isActive: false },
   { id: 2, name: t('discover.byLanguage'), isActive: false },
   { id: 3, name: t('discover.byGenre'), isActive: false },
-  // { id: 4, name: 'Near Me', isActive: true }
 ];
 
 // 推荐电台数据
@@ -33,18 +31,6 @@ const trendingStations = [
   }
 ];
 
-// 处理分类点击
-const handleCategoryClick = (categoryId: number) => {
-  categories.forEach(cat => {
-    cat.isActive = cat.id === categoryId;
-  });
-};
-
-// 处理电台播放按钮点击
-const handlePlayStation = (stationId: number) => {
-  console.log(`Playing station ${stationId}`);
-  // 这里可以添加播放电台的逻辑
-};
 </script>
 
 <template>
@@ -52,32 +38,6 @@ const handlePlayStation = (stationId: number) => {
     <div class="p-6 pt-12 space-y-8">
       <!-- 标题 & 搜索框 -->
        <SearchInput v-model="searchQuery" :placeholder="t('discover.placeholder')" />
-
-<!--      &lt;!&ndash; 聚合分类 &ndash;&gt;-->
-<!--      <div class="space-y-4">-->
-<!--        <h2 class="text-xl font-bold text-black">{{ t('discover.browseCategories') }}</h2>-->
-<!--        <div class="grid grid-cols-2 gap-4">-->
-<!--          <div-->
-<!--            v-for="category in categories"-->
-<!--            :key="category.id"-->
-<!--            class="h-24 rounded-xl p-4 flex flex-col justify-between cursor-pointer hover:bg-gray-200 transition-colors"-->
-<!--            :class="{-->
-<!--              'bg-gray-100': !category.isActive,-->
-<!--              'bg-black': category.isActive-->
-<!--            }"-->
-<!--            @click="handleCategoryClick(category.id)"-->
-<!--          >-->
-<!--            <div class="w-8 h-8 rounded-full" :class="{-->
-<!--              'bg-gray-300': !category.isActive,-->
-<!--              'bg-gray-800 border border-gray-700': category.isActive-->
-<!--            }"></div>-->
-<!--            <span class="font-bold" :class="{-->
-<!--              'text-black': !category.isActive,-->
-<!--              'text-white': category.isActive-->
-<!--            }">{{ category.name }}</span>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
 
       <!-- 推荐结果列表 -->
       <div class="space-y-4">
@@ -97,6 +57,7 @@ const handlePlayStation = (stationId: number) => {
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- 底部导航栏 -->

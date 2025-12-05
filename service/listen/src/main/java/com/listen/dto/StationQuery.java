@@ -31,6 +31,11 @@ public class StationQuery implements Serializable {
      * 电台标签
      */
     private String tags;
+
+    /**
+     * 电台标签
+     */
+    private Long tagId;
     /**
      * 国家
      */
@@ -48,6 +53,10 @@ public class StationQuery implements Serializable {
      * 语言
      */
     private String language;
+    /**
+     * 语言
+     */
+    private String languageId;
     /**
      * 语言代码
      */

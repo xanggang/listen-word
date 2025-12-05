@@ -32,17 +32,17 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response: AxiosResponse) => {
     // 可以根据实际业务需求调整
-    const { code, msg } = response.data;
+    const { code, msg, data } = response.data;
 
     // 如果code存在且不为0，表示业务错误
-    if (code && code !== 0) {
+    if (code && code !== 1) {
       showToast({
         message: msg || '请求失败',
       });
       return Promise.reject(new Error(msg || '请求失败'));
     }
 
-    return response.data;
+    return data;
   },
   (error: AxiosError) => {
     const { response } = error;

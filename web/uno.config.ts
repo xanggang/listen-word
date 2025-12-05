@@ -1,5 +1,5 @@
 // uno.config.ts
-import { defineConfig, presetWind3 } from 'unocss'
+import { defineConfig, presetWind3, transformerDirectives } from 'unocss'
 
 export default defineConfig({
   presets: [
@@ -167,6 +167,9 @@ export default defineConfig({
       }
     }
   },
+  transformers: [
+    transformerDirectives(),
+  ],
   rules: [
     ['m-1', { margin: '1px' }],
   ],

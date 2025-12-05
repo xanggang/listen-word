@@ -1,6 +1,12 @@
 import request from '@/utils/request'
 
 // 定义类型
+// 筛选相关
+export enum FilterEnums {
+  ALL = 'all',
+  By_Language = 'byLanguage',
+  By_Genre = 'byGenre',
+}
 
 // 语言实体
 export interface Languages {
@@ -64,6 +70,8 @@ export interface Station {
   geoLong: number;
   geoDistance: number;
   hasExtendedInfo: number;
+
+  rank?: number
 }
 
 // 分页查询参数
@@ -103,10 +111,11 @@ export interface ApiResponse<T> {
 /**
  * 获取所有语言
  */
-export function getLanguages() {
-  return request<ApiResponse<Languages[]>>({
+export function getLanguages(data: PageQueryDTO) {
+  return request<Languages[]>({
     url: '/common/languages',
-    method: 'post'
+    method: 'post',
+    data
   })
 }
 
@@ -114,7 +123,7 @@ export function getLanguages() {
  * 获取所有国家
  */
 export function getCountries() {
-  return request<ApiResponse<Countries[]>>({
+  return request<Countries[]>({
     url: '/common/countries',
     method: 'post'
   })
@@ -123,10 +132,11 @@ export function getCountries() {
 /**
  * 获取所有标签
  */
-export function getTags() {
-  return request<ApiResponse<Tags[]>>({
-    url: '/common/tags',
-    method: 'post'
+export function getTags(data: PageQueryDTO) {
+  return request<Tags[]>({
+    url: '/common/tags/page',
+    method: 'post',
+    data
   })
 }
 
@@ -134,7 +144,7 @@ export function getTags() {
  * 分页获取标签
  */
 export function getTagsPage(params: PageQueryDTO) {
-  return request<ApiResponse<PageResult<Tags>>>({
+  return request<PageResult<Tags>>({
     url: '/common/tags/page',
     method: 'post',
     data: params
@@ -145,7 +155,7 @@ export function getTagsPage(params: PageQueryDTO) {
  * 分页获取电台
  */
 export function getStationPage(params: StationQuery) {
-  return request<ApiResponse<PageResult<Station>>>({
+  return request<PageResult<Station>>({
     url: '/common/station/page',
     method: 'post',
     data: params
@@ -156,7 +166,7 @@ export function getStationPage(params: StationQuery) {
  * 根据ID获取电台
  */
 export function getStationById(id: number) {
-  return request<ApiResponse<Station>>({
+  return request<Station>({
     url: '/common/station',
     method: 'post',
     data: { id }
