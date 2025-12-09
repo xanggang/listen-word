@@ -2,6 +2,7 @@ package com.listen.controller.web;
 
 import com.common.result.PageResult;
 import com.common.result.Result;
+import com.listen.dto.FuzzyStationQuery;
 import com.listen.dto.PageQueryDTO;
 import com.listen.dto.StationQuery;
 import com.listen.entity.Countries;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/common")
@@ -88,6 +90,12 @@ public class CommonController {
     @PostMapping("/station")
     public Result<Station> getStationByID(@RequestBody Station station) {
         Station res = stationService.getById(station.getId());
+        return Result.success(res);
+    }
+
+    @PostMapping("/station/search")
+    public Result<PageResult<Station>> getStationSearch(@RequestBody FuzzyStationQuery fuzzyStationQuery) {
+        PageResult<Station> res = stationService.search(fuzzyStationQuery);
         return Result.success(res);
     }
 }

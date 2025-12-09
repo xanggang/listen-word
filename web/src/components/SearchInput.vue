@@ -2,11 +2,12 @@
 import { computed, ref, useTemplateRef } from 'vue'
 
 const keyword = defineModel('keyword')
+const emit = defineEmits(['search'])
 
-const inputRef = useTemplateRef('input')
+const inputRef = useTemplateRef('inputRef')
 
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   placeholder: string
 }>(), {
   placeholder: 'search'
@@ -15,7 +16,7 @@ const props = withDefaults(defineProps<{
 const isFocus = ref(false)
 
 function handleFocus() {
-  inputRef.value.focus?.()
+  inputRef.value?.focus?.()
   isFocus.value = true
 }
 
@@ -29,63 +30,71 @@ function onBlur() {
 function handleReset() {
   keyword.value = ''
 }
+
+function handleSearch() {
+  emit('search', keyword.value)
+}
 </script>
 
 <template>
-  <form class="form ">
-    <label for="search" class="rounded-xl" :class="{ 'is-focus': isFocus }">
+  <div class="search-form">
+    <div class="rounded-xl label" :class="{ 'is-focus': isFocus }">
       <input
-        ref="inputRef"
-        autocomplete="off"
-        :placeholder="placeholder"
-        id="search"
-        @blur="onBlur"
-        @focus="onFocus"
-        type="text"
+          ref="inputRef"
+          autocomplete="off"
+          :placeholder="placeholder"
+          id="search"
+          v-model="keyword"
+          @blur="onBlur"
+          @focus="onFocus"
+          @keyup.enter="handleSearch"
+          @search="handleSearch"
+          type="search"
       />
       <div class="icon">
-        <div class="icon-array">1</div>
-        <div class="icon-search">2</div>
-<!--        <svg-->
-<!--          stroke-width="2"-->
-<!--          stroke="currentColor"-->
-<!--          viewBox="0 0 24 24"-->
-<!--          fill="none"-->
-<!--          xmlns="http://www.w3.org/2000/svg"-->
-<!--          class="icon-array"-->
-<!--        >-->
-<!--          <path-->
-<!--            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"-->
-<!--            stroke-linejoin="round"-->
-<!--            stroke-linecap="round"-->
-<!--          ></path>-->
-<!--        </svg>-->
-<!--        <svg-->
-<!--          stroke-width="2"-->
-<!--          stroke="currentColor"-->
-<!--          viewBox="0 0 24 24"-->
-<!--          fill="none"-->
-<!--          xmlns="http://www.w3.org/2000/svg"-->
-<!--          class="icon-search"-->
-<!--        >-->
-<!--          <path-->
-<!--            d="M10 19l-7-7m0 0l7-7m-7 7h18"-->
-<!--            stroke-linejoin="round"-->
-<!--            stroke-linecap="round"-->
-<!--          ></path>-->
-<!--        </svg>-->
+        <!--        <div class="icon-array">1</div>-->
+        <!--        <div class="icon-search">2</div>-->
+        <svg
+            stroke-width="2"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon-array"
+        >
+          <path
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+          ></path>
+        </svg>
+        <svg
+            stroke-width="2"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon-search"
+        >
+          <path
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+          ></path>
+        </svg>
       </div>
       <button @click="handleReset" type="reset" class="close-btn">
         <svg viewBox="0 0 20 20" class="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
           <path
-            clip-rule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              fill-rule="evenodd"
           ></path>
         </svg>
       </button>
-    </label>
-  </form>
+    </div>
+  </div>
+
 </template>
 
 <style scoped lang="less">
@@ -98,7 +107,7 @@ function handleReset() {
 @icon-change-color: var(--primary);
 @height: 4rem;
 
-.form {
+.search-form {
   --input-bg: @input-bg; /* background of input */
   --padding: @padding;
   --rotate: @rotate; /* rotation degree of input*/
@@ -111,7 +120,7 @@ function handleReset() {
   position: relative;
   border-radius: 4px;
 
-  label {
+  .label {
     display: flex;
     align-items: center;
     width: 100%;
@@ -194,21 +203,21 @@ function handleReset() {
       }
     }
 
-    // 有效输入状态
-    &:valid ~ .icon {
-      transform: scale(1.3) rotate(var(--rotate));
-
-      .icon-search {
-        opacity: 1;
-        visibility: visible;
-        color: var(--icon-change-color);
-      }
-
-      .icon-array {
-        opacity: 0;
-        visibility: visible;
-      }
-    }
+    //// 有效输入状态
+    //&:valid ~ .icon {
+    //  transform: scale(1.3) rotate(var(--rotate));
+    //
+    //  .icon-search {
+    //    opacity: 1;
+    //    visibility: visible;
+    //    color: var(--icon-change-color);
+    //  }
+    //
+    //  .icon-array {
+    //    opacity: 0;
+    //    visibility: visible;
+    //  }
+    //}
 
     &:valid ~ .close-btn {
       opacity: 1;
@@ -224,6 +233,30 @@ function handleReset() {
   &::placeholder {
     color: var(--oc-gray-5); // Custom placeholder color
     opacity: 0.5;
+  }
+}
+
+input[type="search"] {
+  /* 隐藏WebKit浏览器的搜索取消按钮 */
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* 隐藏WebKit浏览器的搜索装饰 */
+  &::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* 隐藏Microsoft浏览器的搜索清除按钮 */
+  &::-ms-clear {
+    display: none;
+  }
+
+  /* 隐藏Microsoft浏览器的搜索装饰 */
+  &::-ms-reveal {
+    display: none;
   }
 }
 </style>

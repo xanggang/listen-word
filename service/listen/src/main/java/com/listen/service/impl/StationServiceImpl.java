@@ -1,5 +1,6 @@
 package com.listen.service.impl;
 
+import com.listen.dto.FuzzyStationQuery;
 import com.listen.dto.StationQuery;
 import com.listen.entity.Station;
 import com.listen.mapper.StationMapper;
@@ -31,6 +32,15 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         PageHelper.startPage(stationQuery.getPage(), stationQuery.getPageSize());
 
         Page<Station> page = stationMapperMapper.page(stationQuery);
+
+        return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    @Override
+    public PageResult<Station> search(FuzzyStationQuery fuzzyStationQuery) {
+        PageHelper.startPage(fuzzyStationQuery.getPage(), fuzzyStationQuery.getPageSize());
+
+        Page<Station> page = stationMapperMapper.search(fuzzyStationQuery);
 
         return new PageResult(page.getTotal(), page.getResult());
     }

@@ -173,3 +173,11 @@ export function getStationById(id: number) {
   })
 }
 
+
+export function getStationPageByKeyWord(data: any) {
+  return request<Station[]>({
+    url: '/common/station/search',
+    method: 'post',
+    data,
+  })
+}

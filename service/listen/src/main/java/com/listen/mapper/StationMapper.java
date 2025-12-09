@@ -2,6 +2,7 @@ package com.listen.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.pagehelper.Page;
+import com.listen.dto.FuzzyStationQuery;
 import com.listen.dto.PageQueryDTO;
 import com.listen.dto.StationQuery;
 import com.listen.entity.Languages;
@@ -16,4 +17,6 @@ public interface StationMapper extends BaseMapper<Station> {
 
     // 分页查询
     Page<Station> page(StationQuery stationQuery);
+
+    Page<Station> search(FuzzyStationQuery fuzzyStationQuery);
 }

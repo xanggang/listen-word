@@ -5,7 +5,6 @@ import type { Station } from '@/api'
 
 interface Props {
   item: Station
-  index: number
 }
 
 defineProps<Props>()
