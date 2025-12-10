@@ -51,6 +51,7 @@ export function useList<T>(options: UseListOptions<T>) {
         pageSize,
         ...searchParams.value,
       })
+      debugger
       const { total: resTotal = 0 } = response
       const rows = response.records || []
       if (action === 'refresh') {

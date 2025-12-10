@@ -2,7 +2,6 @@
 import BottomNavBar from '@/components/BottomNavBar.vue'
 import { onMounted, ref } from 'vue'
 import PlayerCard from '@/components/PlayerCard.vue'
-import { getLanguages } from '@/api'
 
 function calcHeight() {
   //首先我们获得视口高度并将其乘以1%以获得1vh单位的值

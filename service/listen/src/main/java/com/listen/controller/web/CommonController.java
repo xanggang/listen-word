@@ -2,9 +2,10 @@ package com.listen.controller.web;
 
 import com.common.result.PageResult;
 import com.common.result.Result;
-import com.listen.dto.FuzzyStationQuery;
+import com.listen.dto.FuzzyStationQueryDTO;
 import com.listen.dto.PageQueryDTO;
-import com.listen.dto.StationQuery;
+import com.listen.dto.StationLocationQueryDTO;
+import com.listen.dto.StationQueryDTO;
 import com.listen.entity.Countries;
 import com.listen.entity.Languages;
 import com.listen.entity.Station;
@@ -15,12 +16,12 @@ import com.listen.service.CountriesService;
 import com.listen.service.LanguagesService;
 import com.listen.service.StationService;
 import com.listen.service.TagsService;
+import com.listen.vo.StationLocationVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/common")
@@ -82,8 +83,8 @@ public class CommonController {
     }
 
     @PostMapping("/station/page")
-    public Result<PageResult<Station>> getStation(@RequestBody StationQuery stationQuery) {
-        PageResult<Station> pageResult = stationService.page(stationQuery);
+    public Result<PageResult<Station>> getStation(@RequestBody StationQueryDTO stationQueryDTO) {
+        PageResult<Station> pageResult = stationService.page(stationQueryDTO);
         return Result.success(pageResult);
     }
 
@@ -94,8 +95,14 @@ public class CommonController {
     }
 
     @PostMapping("/station/search")
-    public Result<PageResult<Station>> getStationSearch(@RequestBody FuzzyStationQuery fuzzyStationQuery) {
-        PageResult<Station> res = stationService.search(fuzzyStationQuery);
+    public Result<PageResult<Station>> getStationSearch(@RequestBody FuzzyStationQueryDTO fuzzyStationQueryDTO) {
+        PageResult<Station> res = stationService.search(fuzzyStationQueryDTO);
         return Result.success(res);
+    }
+
+    @PostMapping("/station/map")
+    public Result<List<StationLocationVO>> getStationLocation(@RequestBody StationLocationQueryDTO stationLocationQueryDTO) {
+
+        return Result.success(stationService.searchByMap(stationLocationQueryDTO));
     }
 }

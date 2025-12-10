@@ -7,25 +7,24 @@ import { showToast } from 'vant'
 import { getStationPageByKeyWord, type Station } from '@/api'
 import LeaderboardItem from '@/views/leaderboard/LeaderboardItem.vue'
 import { debounce } from 'lodash-es';
+import StationSList from '@/components/StationSList/index.vue'
 
 const { t } = useI18n()
 
 // 搜索关键词
 const keyword = ref('');
+const stationSList = ref()
 
-// 推荐电台数据
-const trendingStations = ref<Station[]>([])
-
-
+function getData(data: any) {
+  return getStationPageByKeyWord({
+    keyword: keyword.value,
+    ...data
+  });
+}
 
 // 模糊搜索
-const debouncedSearch = debounce(async (keyword: string) => {
-  const res = await getStationPageByKeyWord({
-    keyword,
-    page: 1,
-    pageSize: 20
-  });
-  trendingStations.value = res.records;
+const debouncedSearch = debounce(() => {
+  stationSList.value?.refresh()
 }, 300);
 
 watch(keyword, debouncedSearch)
@@ -40,13 +39,8 @@ watch(keyword, debouncedSearch)
       <!-- 推荐结果列表 -->
       <div class="space-y-4 h-[calc(100%-5rem)]">
         <h2 class="text-lg font-bold text-black">Trending Worldwide</h2>
-        <div class="space-y-4 overflow-y-auto h-[calc(100%-1rem)]">
-
-          <LeaderboardItem
-              :item="station"
-              v-for="station in trendingStations"
-              :key="station.id">
-          </LeaderboardItem>
+        <div class="space-y-4 overflow-y-auto h-[calc(100%-11.5rem)]">
+          <StationSList :getData="getData" ref="stationSList"></StationSList>
         </div>
       </div>
 

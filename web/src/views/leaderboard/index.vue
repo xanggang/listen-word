@@ -3,11 +3,10 @@ import { onMounted, ref, watch, watchEffect } from 'vue';
 import RadioGroup from '@/components/RadioGroup.vue'
 import { useI18n } from 'vue-i18n'
 import SlideRadioGroup from '@/components/SlideRadioGroup.vue'
-import { FilterEnums, getStationPage, getTags, getLanguages, type Station } from '@/api'
+import { FilterEnums, getStationPage, getTags, getLanguages } from '@/api'
 import { useList } from '@/hooks/useList.ts'
-import { formatNumber } from '@/utils/utils'
 import LeaderboardItem from './LeaderboardItem.vue'
-import LeaderboardItem1 from './LeaderboardItem1.vue'
+import StationSList from '@/components/StationSList/index.vue'
 
 const { t } = useI18n()
 
@@ -80,15 +79,10 @@ async function getData(data: any) {
   return res
 }
 
+const stationSList = ref()
 
 watch([typeActive, tagActive, languageActive], () => {
-  onRefresh()
-})
-
-const {
-  list, loading, finished, refreshing, onRefresh, onLoad,
-} = useList<any>({
-  apiFunc: getData,
+  stationSList.value?.refresh()
 })
 
 </script>
@@ -109,24 +103,7 @@ const {
     </div>
 
     <div class="list-wrap">
-      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <van-list
-            class="mt-12"
-            v-model:loading="loading"
-            :finished="finished"
-            finished-text="没有更多了"
-            @load="onLoad"
-        >
-          <div class="space-y-4">
-            <LeaderboardItem
-                v-for="(item, index) in list"
-                :key="item.id"
-                :item="item"
-                :index="index"
-            />
-          </div>
-        </van-list>
-      </van-pull-refresh>
+      <StationSList :get-data="getData" ref="stationSList"></StationSList>
     </div>
   </div>
 </template>

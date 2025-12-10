@@ -1,11 +1,12 @@
 package com.listen.service;
 
-import com.listen.dto.FuzzyStationQuery;
-import com.listen.dto.StationQuery;
+import com.listen.dto.FuzzyStationQueryDTO;
+import com.listen.dto.StationLocationQueryDTO;
+import com.listen.dto.StationQueryDTO;
 import com.listen.entity.Station;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.listen.dto.PageQueryDTO;
 import com.common.result.PageResult;
+import com.listen.vo.StationLocationVO;
 
 import java.util.List;
 
@@ -17,7 +18,9 @@ import java.util.List;
   */
   public interface StationService extends IService<Station> {
 
-    PageResult<Station> page(StationQuery stationQuery);
+    PageResult<Station> page(StationQueryDTO stationQueryDTO);
 
-    PageResult<Station> search(FuzzyStationQuery fuzzyStationQuery);
+    PageResult<Station> search(FuzzyStationQueryDTO fuzzyStationQueryDTO);
+
+    List<StationLocationVO> searchByMap(StationLocationQueryDTO stationLocationQueryDTO);
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class StationQuery implements Serializable {
+public class StationQueryDTO implements Serializable {
 
     //页码
     @NotNull

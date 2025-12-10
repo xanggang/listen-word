@@ -41,7 +41,15 @@
         <result property="hasExtendedInfo" column="has_extended_info" jdbcType="INTEGER"/>
     </resultMap>
 
-    <select id="page" parameterType="com.listen.dto.StationQuery" resultMap="StationMap">
+    <resultMap type="com.listen.vo.StationLocationVO" id="StationLocationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
+        <result property="geoLat" column="geo_lat" jdbcType="NUMERIC"/>
+        <result property="geoLong" column="geo_long" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <select id="page" parameterType="com.listen.dto.StationQueryDTO" resultMap="StationMap">
         select * from station
         <where>
             <if test="name != null and name != ''">
@@ -79,12 +87,17 @@
         order by votes desc
     </select>
 
-    <select id="search" parameterType="com.listen.dto.FuzzyStationQuery" resultMap="StationMap">
+    <select id="search" parameterType="com.listen.dto.FuzzyStationQueryDTO" resultMap="StationMap">
         SELECT * FROM station
         WHERE name LIKE CONCAT('%', #{keyword}, '%')
            OR tags LIKE CONCAT('%', #{keyword}, '%')
            OR language LIKE CONCAT('%', #{keyword}, '%')
         ORDER BY votes DESC
+    </select>
+
+
+    <select id="searchByMap" parameterType="com.listen.dto.StationLocationQueryDTO" resultMap="StationLocationMap">
+        SELECT * FROM station WHERE geo_lat IS NOT NULL AND geo_long IS NOT NULL LIMIT 1000
     </select>
 
 </mapper>

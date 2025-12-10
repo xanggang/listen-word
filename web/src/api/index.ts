@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { mock1 } from '@/api/mocl.ts'
 
 // 定义类型
 // 筛选相关
@@ -174,10 +175,34 @@ export function getStationById(id: number) {
 }
 
 
-export function getStationPageByKeyWord(data: any) {
-  return request<Station[]>({
+export async function getStationPageByKeyWord(data: any) {
+
+  console.log(111)
+  return Promise.resolve({
+    total: mock1.length,
+    records: mock1
+  })
+
+  const res = await request<Station[]>({
     url: '/common/station/search',
     method: 'post',
     data,
   })
+
+  console.log(res)
+  return res;
+}
+
+
+export async function getStationPageByMap(data: any) {
+
+  return mock1
+
+  const res = await request<Station[]>({
+    url: '/common/station/map',
+    method: 'post',
+    data,
+  })
+
+  return res;
 }

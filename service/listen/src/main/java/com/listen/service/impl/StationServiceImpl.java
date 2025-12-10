@@ -1,18 +1,18 @@
 package com.listen.service.impl;
 
-import com.listen.dto.FuzzyStationQuery;
-import com.listen.dto.StationQuery;
+import com.listen.dto.FuzzyStationQueryDTO;
+import com.listen.dto.StationLocationQueryDTO;
+import com.listen.dto.StationQueryDTO;
 import com.listen.entity.Station;
 import com.listen.mapper.StationMapper;
 import com.listen.service.StationService;
+import com.listen.vo.StationLocationVO;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.PageRequest;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.common.result.PageResult;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.listen.dto.PageQueryDTO;
 
 import java.util.List;
 
@@ -28,21 +28,26 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
     @Autowired
     private StationMapper stationMapperMapper;
 
-    public PageResult<Station> page(StationQuery stationQuery) {
-        PageHelper.startPage(stationQuery.getPage(), stationQuery.getPageSize());
+    public PageResult<Station> page(StationQueryDTO stationQueryDTO) {
+        PageHelper.startPage(stationQueryDTO.getPage(), stationQueryDTO.getPageSize());
 
-        Page<Station> page = stationMapperMapper.page(stationQuery);
+        Page<Station> page = stationMapperMapper.page(stationQueryDTO);
 
         return new PageResult(page.getTotal(), page.getResult());
     }
 
     @Override
-    public PageResult<Station> search(FuzzyStationQuery fuzzyStationQuery) {
-        PageHelper.startPage(fuzzyStationQuery.getPage(), fuzzyStationQuery.getPageSize());
+    public PageResult<Station> search(FuzzyStationQueryDTO fuzzyStationQueryDTO) {
+        PageHelper.startPage(fuzzyStationQueryDTO.getPage(), fuzzyStationQueryDTO.getPageSize());
 
-        Page<Station> page = stationMapperMapper.search(fuzzyStationQuery);
+        Page<Station> page = stationMapperMapper.search(fuzzyStationQueryDTO);
 
         return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    @Override
+    public List<StationLocationVO> searchByMap(StationLocationQueryDTO stationLocationQueryDTO) {
+        return stationMapperMapper.searchByMap(stationLocationQueryDTO);
     }
 
 }

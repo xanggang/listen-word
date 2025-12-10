@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import PlayerButton from '@/components/PlayerButton.vue'
-import { ref } from 'vue'
-import SearchInput from '@/components/SearchInput.vue'
+import Map from '@/components/Map.vue'
+
 
 </script>
 
 <template>
-
   <div class="content">
-    <SearchInput  placeholder="Search stations, cities, genres..." />
+    <Map></Map>
   </div>
 
 </template>

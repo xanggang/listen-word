@@ -1,12 +1,17 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import type { Station } from '@/api'
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+export const usePlayerStore = defineStore('player', () => {
+
+  const currentStation = ref<Partial<Station>>({})
+
+  const handlePlayerStation = (station: Station) => {
+    currentStation.value = station
   }
 
-  return { count, doubleCount, increment }
+  return {
+    currentStation,
+    handlePlayerStation,
+  }
 })

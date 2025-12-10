@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePlayerStore } from '@/stores/counter.ts'
 import type { Station } from '@/api'
 
 const playerStore = usePlayerStore()
 const { currentStation } = storeToRefs(playerStore)
-
-
 
 // 定义props
 interface Props {
@@ -70,10 +68,6 @@ const handleToggleFavorite = () => {
 const handleToggleVolume = () => {
   isVolumeOn.value = !isVolumeOn.value
 }
-
-watch(currentStation, () => {
-  handlePlay()
-})
 
 const handleShowMore = () => {
 
@@ -143,8 +137,8 @@ const handleToggleExpand = () => {
               @click="handleTogglePlay"
               aria-label="Play/Pause"
             >
-              <div v-if="playerState.playerState === PlayingEnums.playing" class="iconfont icon-zanting  text-xl"></div>
-              <div v-else class="iconfont icon-bofang text-xl"></div>
+              <div v-if="playerState.playerState === PlayingEnums.playing" class="iconfont icon-bofang text-xl"></div>
+              <div v-else class="iconfont icon-zanting text-xl"></div>
             </div>
 
             <!-- 更多选项按钮 -->

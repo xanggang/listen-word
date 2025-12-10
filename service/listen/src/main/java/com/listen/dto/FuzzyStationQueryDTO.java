@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class FuzzyStationQuery {
+public class FuzzyStationQueryDTO {
 
     //页码
     @NotNull
