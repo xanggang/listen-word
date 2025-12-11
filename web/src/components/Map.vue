@@ -1,10 +1,11 @@
 <script setup >
-import { Map, MapStyle, Marker, config } from '@maptiler/sdk';
+import { Map, MapStyle, Marker, config, Popup } from '@maptiler/sdk';
 import { shallowRef, onMounted, onUnmounted, markRaw } from 'vue';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 
 import { getStationPageByMap } from '@/api'
 
+const emits = defineEmits(['change'])
 
 
 const mapContainer = shallowRef(null);
@@ -57,9 +58,7 @@ onMounted(async () => {
 
     const pin1 = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="5" fill="#69db7c"/></svg>`;
 
-    const hoverPin = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="5" fill="#000000"/></svg>`;
-
-    const svgPinImage = new Image(4, 4);
+    const svgPinImage = new Image(6, 6);
 
     svgPinImage.onload = () => {
       map.value.addImage('pin1', svgPinImage)
@@ -67,25 +66,11 @@ onMounted(async () => {
 
     svgPinImage.src = svgStringToImageSrc(pin1);
 
-    const svgHoverPinImage = new Image(4, 4);
-
-    svgHoverPinImage.onload = () => {
-      map.value.addImage('hoverPin', svgHoverPinImage)
-    }
-
-    svgHoverPinImage.src = svgStringToImageSrc(hoverPin);
-
-
 
     map.value.addLayer({
       'id': 'places',
       'type': 'symbol',
       'source': 'places',
-      // 'paint': {
-      //   'fill-color': "#D3DBEC",
-      //   'fill-opacity': 0.8,
-      //   'fill-outline-color': "rgba(255, 255, 255, 1)"
-      // },
       'layout': {
         'icon-image': 'pin1',
         'icon-overlap': 'always',
@@ -96,23 +81,70 @@ onMounted(async () => {
     map.value.on('click', 'places', function (e) {
       const coordinates = e.features[0].geometry.coordinates.slice();
       const description = e.features[0].properties.description;
+      const json = JSON.parse(description)
+
+      // 移动地图中心点到点击位置
+      map.value.flyTo({
+        center: coordinates,
+        zoom: 5,
+        speed: 0.8
+      });
+
+      emits('change', json)
+
+      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      }
 
       console.log(coordinates);
-      console.log(description);
+
+      // Populate the popup and set its coordinates
+      // based on the feature found.
+      popup.setLngLat(coordinates).setHTML(`<div>${json.name}</div>`).addTo(map.value);
     });
 
-    map.value.on('mousemove', 'places', function (e) {
-      console.log(e);
-      if (e.features.length > 0) {
-        // map.value.setFeatureState({
-        //   source: 'places',
-        //   sourceLayer: 'my-source-layer',
-        //   id: e.features[0].id,
-        // }, {
-        //   hover: true
-        // });
-      }
+    // Create a popup, but don't add it to the map yet.
+    const popup = new Popup({
+      closeButton: false,
+      closeOnClick: false
     });
+
+    // map.value.on('mouseenter', 'places', function (e) {
+    //   // Change the cursor style as a UI indicator.
+    //   map.value.getCanvas().style.cursor = 'pointer';
+    //
+    //   const coordinates = e.features[0].geometry.coordinates.slice();
+    //   const description = e.features[0].properties.description;
+    //
+    //   const json = JSON.parse(description)
+    //
+    //   // Ensure that if the map is zoomed out such that multiple
+    //   // copies of the feature are visible, the popup appears
+    //   // over the copy being pointed to.
+    //   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    //   }
+    //
+    //   console.log(coordinates);
+    //
+    //   // Populate the popup and set its coordinates
+    //   // based on the feature found.
+    //   popup.setLngLat(coordinates).setHTML(`<div>${json.name}</div>`).addTo(map.value);
+    // });
+
+
+    // map.value.on('mousemove', 'places', function (e) {
+    //   console.log(e);
+    //   if (e.features.length > 0) {
+    //     // map.value.setFeatureState({
+    //     //   source: 'places',
+    //     //   sourceLayer: 'my-source-layer',
+    //     //   id: e.features[0].id,
+    //     // }, {
+    //     //   hover: true
+    //     // });
+    //   }
+    // });
 
   })
 

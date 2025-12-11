@@ -1,33 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import BottomNavBar from '@/components/BottomNavBar.vue';
-import PlayerCard from '@/components/PlayerCard.vue';
+import Map from '@/components/Map.vue'
+import { getStationById } from '@/api'
+import { usePlayerStore } from '@/stores/counter.ts'
+
+const playerStore = usePlayerStore()
 
 
+async function handleChange(data: any) {
+  // const res = await getStationById(data.id)
+  playerStore.handlePlayerStation(data)
+}
 </script>
 
 <template>
   <div class="phone-container w-full h-full bg-white overflow-hidden relative">
-    <!-- 上中部：地图区域 -->
-    <div class="relative w-full h-full map-placeholder overflow-hidden">
-      <!-- 模拟地图元素 -->
-      <div class="absolute inset-0 opacity-10 pointer-events-none">
-        <div class="border-b border-gray-400 w-full h-32 top-24 absolute transform rotate-12"></div>
-        <div class="border-r border-gray-400 h-full w-32 left-48 absolute transform -rotate-6"></div>
-      </div>
-
-      <!-- 电台标记点 -->
-      <div class="map-marker" style="top: 120px; left: 80px;"></div>
-      <div class="map-marker" style="top: 300px; left: 60px;"></div>
-      <div class="map-marker" style="top: 200px; right: 50px;"></div>
-
-      <!-- 当前播放电台标记 (中心位置) -->
-      <div class="map-marker map-marker-active" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">
-        <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-3 py-1 rounded-full whitespace-nowrap">Now Playing: Tokyo FM</div>
-      </div>
-    </div>
-
-
+    <Map @change="handleChange"> </Map>
   </div>
 </template>
 
